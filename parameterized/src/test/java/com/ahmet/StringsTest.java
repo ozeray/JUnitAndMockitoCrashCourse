@@ -1,10 +1,13 @@
 package com.ahmet;
 
-import com.ahmet.helpers.BlankStringsArgumentProvider;
-import com.ahmet.helpers.VariableSource;
+import com.ahmet.helpers.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.*;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +42,7 @@ public class StringsTest {
 
     private static Stream<Arguments> stringsForBlank() {
         return Stream.of(Arguments.of(null, true), Arguments.of("", true),
-                         Arguments.of(" ", true), Arguments.of("sadasd", false));
+                Arguments.of(" ", true), Arguments.of("sadasd", false));
     }
 
     @ParameterizedTest
@@ -72,9 +75,9 @@ public class StringsTest {
 
     private static Stream<Arguments> arguments = Stream.of(
             Arguments.of("", true),
-                    Arguments.of(" ", true),
-                    Arguments.of("\t", true),
-                    Arguments.of("sada", false));
+            Arguments.of(" ", true),
+            Arguments.of("\t", true),
+            Arguments.of("sada", false));
 
     @ParameterizedTest
     @VariableSource("arguments")
@@ -83,5 +86,28 @@ public class StringsTest {
         assertEquals(expected, Strings.isBlank(input));
     }
 
+    @ParameterizedTest
+    @CsvSource({"2018/12/25,2018", "2019/02/11,2019"})
+    public void getYear_ShouldWorkAsExpected(@ConvertWith(SlashyDateConverter.class) LocalDate date, int expected) {
+        assertEquals(expected, date.getYear());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"Isaac,,Newton,Isaac Newton", "Charles,Robert,Darwin,Charles Robert Darwin"})
+    public void fullName_ShouldGenerateTheExpectedFullName(ArgumentsAccessor accessor) {
+        String firstName = accessor.getString(0);
+        String middleName = accessor.getString(1);
+        String lastName = accessor.getString(2);
+        String expected = accessor.getString(3);
+
+        Person person = new Person(firstName, middleName, lastName);
+        assertEquals(expected, person.fullName());
+    }
+
+    @ParameterizedTest(name = "{index} - {arguments} - Expected:{0}, First Name:{1}, Middle:{2}, Last Name:{3}")
+    @CsvSource({"Isaac Newton,Isaac,,Newton", "Charles Robert Darwin,Charles,Robert,Darwin"})
+    public void fullName_ShouldGenerateTheExpectedFullName_UsingAggregator(String expected, @AggregateWith(PersonAggregator.class) Person person) {
+        assertEquals(expected, person.fullName());
+    }
 
 }

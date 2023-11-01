@@ -1,0 +1,17 @@
+package com.ahmet.helpers;
+
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+
+public class PersonAggregator implements ArgumentsAggregator {
+
+    @Override
+    public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext parameterContext)
+            throws ArgumentsAggregationException {
+        return new Person(accessor.getString(1),
+                        accessor.getString(2),
+                          accessor.getString(3));
+    }
+}
