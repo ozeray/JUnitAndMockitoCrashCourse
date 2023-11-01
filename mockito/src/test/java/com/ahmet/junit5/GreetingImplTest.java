@@ -9,6 +9,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
 
+// Mockito cannot mock
+// 	- static methods/variables,
+// 	- final classes/methods/variables,
+// 	- constructors,
+// 	- private methods/variables
+// 	- enums,
+// because it uses proxy pattern.
+//
+// PowerMock can mock them, because it uses bytecode instrumentation/manipulation and custom class loader.
+// It has two flavours: For Mockito and for EasyMock. Each has consistence style with the respective mocking library,
+// which simplifies migration (e.g. from Mockito to PowerMock)
+// NOTE: PowerMock is deprecated. Should not be used as it's not safe.
 @ExtendWith(MockitoExtension.class)
 public class GreetingImplTest {
 
