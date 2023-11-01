@@ -2,6 +2,7 @@ package com.ahmet;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,6 +22,19 @@ public class MonthTest {
     @ParameterizedTest
     @EnumSource(value = Month.class, names = {"APRIL", "JUNE", "SEPTEMBER", "NOVEMBER"})
     public void someMonths_Are30DaysLong(Month month) {
+        assertEquals(30, month.getLength(false));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"APRIL", "JUNE", "SEPTEMBER", "NOVEMBER"}) //Implicit conversion to Enum.
+    // Types that will be implicitly converted by CsvSource:
+    // UUID,
+    // Locale,
+    // LocalDate, LocalTime, LocalDateTime, Year, Month, etc.,
+    // File, Path,
+    // URL, URI,
+    // Enum subclasses
+    public void someMonths_Are30DaysLong_Csv(Month month) {
         assertEquals(30, month.getLength(false));
     }
 

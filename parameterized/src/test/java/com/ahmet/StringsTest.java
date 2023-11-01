@@ -1,5 +1,7 @@
 package com.ahmet;
 
+import com.ahmet.helpers.BlankStringsArgumentProvider;
+import com.ahmet.helpers.VariableSource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
@@ -55,4 +57,31 @@ public class StringsTest {
     public void isBlank_ShouldReturnTrueForNullOrBlankStrings_FromMethod(String input) {
         assertTrue(Strings.isBlank(input));
     }
+
+    @ParameterizedTest
+    @MethodSource("com.ahmet.StringParams#blankStrings")
+    public void isBlank_ShouldReturnTrueForNullOrBlankStrings_FromExternalMethod(String input) {
+        assertTrue(Strings.isBlank(input));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(BlankStringsArgumentProvider.class)
+    public void isBlank_ShouldReturnTrueForNullOrBlankStringsAndFalseForNonBlankStrings_ByArgumentsProvider(String input) {
+        assertTrue(Strings.isBlank(input));
+    }
+
+    private static Stream<Arguments> arguments = Stream.of(
+            Arguments.of("", true),
+                    Arguments.of(" ", true),
+                    Arguments.of("\t", true),
+                    Arguments.of("sada", false));
+
+    @ParameterizedTest
+    @VariableSource("arguments")
+    public void isBlank_ShouldReturnTrueForNullOrBlankStringsAndFalseForNonBlankStrings_FromAnnotation
+            (String input, boolean expected) {
+        assertEquals(expected, Strings.isBlank(input));
+    }
+
+
 }
